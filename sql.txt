@@ -1,4 +1,4 @@
---1 Задание--
+п»ї--1 Р—Р°РґР°РЅРёРµ---
 
 CREATE TABLE IF NOT EXISTS music_genre (
 id serial PRIMARY KEY,
@@ -19,7 +19,7 @@ date_release date
 CREATE TABLE IF NOT EXISTS genre_musician ( 
 genre_id INTEGER REFERENCES music_genre(id),
 musician_id INTEGER REFERENCES musician(id),
-CONSTRAINT pk PRIMARY KEY (genre_id,musician_id) -- составной первичный ключ
+CONSTRAINT pk PRIMARY KEY (genre_id,musician_id) -- СЃРѕСЃС‚Р°РІРЅРѕР№ РїРµСЂРІРёС‡РЅС‹Р№ РєР»СЋС‡
 );
 
 CREATE TABLE IF NOT EXISTS album_musician ( 
@@ -46,7 +46,7 @@ track_id INTEGER REFERENCES track(id),
 CONSTRAINT elsepk PRIMARY KEY (collection_id, track_id) 
 );
 
---2 Задание--
+--2 Р—Р°РґР°РЅРёРµ---
 
 CREATE TABLE IF NOT EXISTS employee (
 id serial PRIMARY KEY,
