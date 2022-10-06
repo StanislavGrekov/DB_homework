@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS music_genre (
+п»їCREATE TABLE IF NOT EXISTS music_genre (
 id SERIAL PRIMARY KEY,
 genre VARCHAR(40) UNIQUE NOT NULL
 );
@@ -17,7 +17,7 @@ date_release date
 CREATE TABLE IF NOT EXISTS genre_musician ( 
 genre_id INTEGER REFERENCES music_genre(id),
 musician_id INTEGER REFERENCES musician(id),
-CONSTRAINT pk PRIMARY KEY (genre_id,musician_id) -- составной первичный ключ
+CONSTRAINT pk PRIMARY KEY (genre_id,musician_id) -- СЃРѕСЃС‚Р°РІРЅРѕР№ РїРµСЂРІРёС‡РЅС‹Р№ РєР»СЋС‡
 );
 
 CREATE TABLE IF NOT EXISTS album_musician ( 

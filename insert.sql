@@ -1,34 +1,34 @@
--- Таблица musician
+п»ї-- РўР°Р±Р»РёС†Р° musician
 INSERT INTO musician(musician_name) 
 VALUES ('Metallica ');
 INSERT INTO musician(musician_name) 
-VALUES ('Басков ');
+VALUES ('Р‘Р°СЃРєРѕРІ ');
 INSERT INTO musician(musician_name) 
-VALUES ('Стас Михайлов');
+VALUES ('РЎС‚Р°СЃ РњРёС…Р°Р№Р»РѕРІ');
 INSERT INTO musician(musician_name) 
-VALUES ('Ария ');
+VALUES ('РђСЂРёСЏ ');
 INSERT INTO musician(musician_name) 
-VALUES ('Би-2 ');
+VALUES ('Р‘Рё-2 ');
 INSERT INTO musician(musician_name) 
-VALUES ('Кукрыниксы ');
+VALUES ('РљСѓРєСЂС‹РЅРёРєСЃС‹ ');
 INSERT INTO musician(musician_name) 
 VALUES ('Bob Marley');
 INSERT INTO musician(musician_name) 
 VALUES ('Larry Goldings');
 
--- Таблица music_genre
+-- РўР°Р±Р»РёС†Р° music_genre
 INSERT INTO music_genre(id, genre) 
-VALUES (1,'Рок');
+VALUES (1,'Р РѕРє');
 INSERT INTO music_genre(id, genre) 
-VALUES (2,'Поп-музыка');
+VALUES (2,'РџРѕРї-РјСѓР·С‹РєР°');
 INSERT INTO music_genre(id, genre)
-VALUES (3,'Металл');
+VALUES (3,'РњРµС‚Р°Р»Р»');
 INSERT INTO music_genre(id, genre) 
-VALUES (4,'Регги');
+VALUES (4,'Р РµРіРіРё');
 INSERT INTO music_genre(id, genre) 
-VALUES (5,'Джаз');
+VALUES (5,'Р”Р¶Р°Р·');
 
--- Таблица genre_musician
+-- РўР°Р±Р»РёС†Р° genre_musician
 INSERT INTO genre_musician
 VALUES (1,4);
 INSERT INTO genre_musician 
@@ -46,47 +46,47 @@ VALUES (4,7);
 INSERT INTO genre_musician 
 VALUES (5,8);
 
--- Таблица album
+-- РўР°Р±Р»РёС†Р° album
 INSERT INTO album(id, album_name, date_release) 
 VALUES (1, 'Load', '1996-01-01');
 INSERT INTO album(id, album_name, date_release) 
-VALUES (2, 'Тебе одной', '2007-01-01');
+VALUES (2, 'РўРµР±Рµ РѕРґРЅРѕР№', '2007-01-01');
 INSERT INTO album(id, album_name, date_release) 
-VALUES (3, 'Все для тебя', '2007-01-01');
+VALUES (3, 'Р’СЃРµ РґР»СЏ С‚РµР±СЏ', '2007-01-01');
 INSERT INTO album(id, album_name, date_release) 
-VALUES (4, 'Проклятье морей', '2018-01-01');
+VALUES (4, 'РџСЂРѕРєР»СЏС‚СЊРµ РјРѕСЂРµР№', '2018-01-01');
 INSERT INTO album(id, album_name, date_release) 
-VALUES (5, 'Горизонт событий', '2017-01-01');
+VALUES (5, 'Р“РѕСЂРёР·РѕРЅС‚ СЃРѕР±С‹С‚РёР№', '2017-01-01');
 INSERT INTO album(id, album_name, date_release) 
-VALUES (6, 'Артист', '2016-01-01');
+VALUES (6, 'РђСЂС‚РёСЃС‚', '2016-01-01');
 INSERT INTO album(id, album_name, date_release) 
 VALUES (7, 'Legend', '2019-01-01');
 INSERT INTO album(id, album_name, date_release) 
 VALUES (8, 'Big Staff', '1996-01-01');
 
--- Таблица track
+-- РўР°Р±Р»РёС†Р° track
 INSERT INTO track (id, id_album, track_name,track_duration) 
 VALUES (1, 1, '2x4', 5.28);
 INSERT INTO track (id, id_album, track_name,track_duration) 
 VALUES (2, 1, 'Cure', 4.54);
 INSERT INTO track (id, id_album, track_name,track_duration) 
-VALUES (3, 2, 'Моя любимая', 3.32);
+VALUES (3, 2, 'РњРѕСЏ Р»СЋР±РёРјР°СЏ', 3.32);
 INSERT INTO track (id, id_album, track_name,track_duration) 
-VALUES (4, 2, 'Сердце', 3.38);
+VALUES (4, 2, 'РЎРµСЂРґС†Рµ', 3.38);
 INSERT INTO track (id, id_album, track_name,track_duration) 
-VALUES (5, 3, 'Сладкая', 3.23);
+VALUES (5, 3, 'РЎР»Р°РґРєР°СЏ', 3.23);
 INSERT INTO track (id, id_album, track_name,track_duration) 
-VALUES (6, 3, 'С днем рождения', 6.57);
+VALUES (6, 3, 'РЎ РґРЅРµРј СЂРѕР¶РґРµРЅРёСЏ', 6.57);
 INSERT INTO track (id, id_album, track_name,track_duration) 
-VALUES (7, 4, 'Гонка за славой', 4.54);
+VALUES (7, 4, 'Р“РѕРЅРєР° Р·Р° СЃР»Р°РІРѕР№', 4.54);
 INSERT INTO track (id, id_album, track_name,track_duration) 
-VALUES (8, 4, 'Варяг', 6.39);
+VALUES (8, 4, 'Р’Р°СЂСЏРі', 6.39);
 INSERT INTO track (id, id_album, track_name,track_duration) 
-VALUES (9, 5, 'Черное солнце', 5.13);
+VALUES (9, 5, 'Р§РµСЂРЅРѕРµ СЃРѕР»РЅС†Рµ', 5.13);
 INSERT INTO track (id, id_album, track_name,track_duration) 
-VALUES (10, 6, 'Шторм', 4.02);
+VALUES (10, 6, 'РЁС‚РѕСЂРј', 4.02);
 INSERT INTO track (id, id_album, track_name,track_duration) 
-VALUES (11, 6, 'Вера', 4.34);
+VALUES (11, 6, 'Р’РµСЂР°', 4.34);
 INSERT INTO track (id, id_album, track_name,track_duration) 
 VALUES (12, 7, 'My love', 3.52);
 INSERT INTO track (id, id_album, track_name,track_duration) 
@@ -97,26 +97,26 @@ INSERT INTO track (id, id_album, track_name,track_duration)
 VALUES (15, 8, 'IdeLupino', 3.32);
 
 
---Таблица Collection
+--РўР°Р±Р»РёС†Р° Collection
 INSERT INTO  collection (id, collection_name, release_date) 
-VALUES (1, 'Новая коллекция', '1998-01-02'); 
+VALUES (1, 'РќРѕРІР°СЏ РєРѕР»Р»РµРєС†РёСЏ', '1998-01-02'); 
 INSERT INTO  collection (id, collection_name, release_date) 
-VALUES (2, 'Моя коллекция', '2001-01-04');
+VALUES (2, 'РњРѕСЏ РєРѕР»Р»РµРєС†РёСЏ', '2001-01-04');
 INSERT INTO  collection (id, collection_name, release_date) 
-VALUES (3, 'Для спорта', '2015-03-04');
+VALUES (3, 'Р”Р»СЏ СЃРїРѕСЂС‚Р°', '2015-03-04');
 INSERT INTO  collection (id, collection_name, release_date) 
-VALUES (4, 'Для сна', '2018-08-25');
+VALUES (4, 'Р”Р»СЏ СЃРЅР°', '2018-08-25');
 INSERT INTO  collection (id, collection_name, release_date) 
-VALUES (5, 'Для пищеварения', '2003-11-11');
+VALUES (5, 'Р”Р»СЏ РїРёС‰РµРІР°СЂРµРЅРёСЏ', '2003-11-11');
 INSERT INTO  collection (id, collection_name, release_date) 
-VALUES (6, 'Новогодняя', '2019-12-31');
+VALUES (6, 'РќРѕРІРѕРіРѕРґРЅСЏСЏ', '2019-12-31');
 INSERT INTO  collection (id, collection_name, release_date) 
-VALUES (7, 'Праздничная', '1967-02-07');
+VALUES (7, 'РџСЂР°Р·РґРЅРёС‡РЅР°СЏ', '1967-02-07');
 INSERT INTO  collection (id, collection_name, release_date) 
-VALUES (8, 'Любимая', '1999-06-22');
+VALUES (8, 'Р›СЋР±РёРјР°СЏ', '1999-06-22');
 
 
---Таблица Collection_track
+--РўР°Р±Р»РёС†Р° Collection_track
 INSERT INTO  collection_track  (collection_id,track_id) 
 VALUES (1,3);
 INSERT INTO  collection_track  (collection_id,track_id) 
@@ -150,7 +150,7 @@ VALUES (8,2);
 INSERT INTO  collection_track  (collection_id,track_id) 
 VALUES (8,11);
 
---Таблица album_musician
+--РўР°Р±Р»РёС†Р° album_musician
 INSERT INTO  album_musician  (album_id, musician_id) 
 VALUES (1,1);
 INSERT INTO  album_musician  (album_id, musician_id) 

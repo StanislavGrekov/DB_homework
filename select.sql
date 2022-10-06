@@ -1,4 +1,4 @@
-
+﻿
 SELECT album_name, date_release FROM album
 where date_release = '2018-01-01';
 
