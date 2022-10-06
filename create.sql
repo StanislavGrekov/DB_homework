@@ -1,25 +1,23 @@
-ï»¿--1 Ð—Ð°Ð´Ð°Ð½Ð¸Ðµ---
-
 CREATE TABLE IF NOT EXISTS music_genre (
-id serial PRIMARY KEY,
+id SERIAL PRIMARY KEY,
 genre VARCHAR(40) UNIQUE NOT NULL
 );
 									  
 CREATE TABLE IF NOT EXISTS musician ( 
-id serial PRIMARY KEY,
+id SERIAL PRIMARY KEY,
 musician_name VARCHAR(40) UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Album ( 
-id serial PRIMARY KEY,
-album_name VARCHAR(40) UNIQUE not NULL,
+id SERIAL PRIMARY KEY,
+album_name VARCHAR(40) UNIQUE NOT NULL,
 date_release date
 );
 
 CREATE TABLE IF NOT EXISTS genre_musician ( 
 genre_id INTEGER REFERENCES music_genre(id),
 musician_id INTEGER REFERENCES musician(id),
-CONSTRAINT pk PRIMARY KEY (genre_id,musician_id) -- ÑÐ¾ÑÑ‚Ð°Ð²Ð½Ð¾Ð¹ Ð¿ÐµÑ€Ð²Ð¸Ñ‡Ð½Ñ‹Ð¹ ÐºÐ»ÑŽÑ‡
+CONSTRAINT pk PRIMARY KEY (genre_id,musician_id) -- ñîñòàâíîé ïåðâè÷íûé êëþ÷
 );
 
 CREATE TABLE IF NOT EXISTS album_musician ( 
@@ -29,15 +27,18 @@ CONSTRAINT anotherpk PRIMARY KEY (album_id,musician_id)
 );
 
 CREATE TABLE if not exists track ( 
-id serial PRIMARY KEY,
+id SERIAL PRIMARY KEY,
 id_album INTEGER REFERENCES Album(id),
 track_name VARCHAR(40) UNIQUE NOT NULL,
-track_duration NUMERIC NOT NULL
+track_duration NUMERIC(8,2) CHECK
+	(track_duration > 1.0 and track_duration < 10.0)
 );
 
 CREATE TABLE IF NOT EXISTS collection ( 
-id serial primary key,
-collection_name VARCHAR(40) UNIQUE not NULL
+id SERIAL primary key,
+collection_name VARCHAR(40) UNIQUE NOT NULL,
+release_date DATE CHECK
+	(release_date > '1950-01-01' AND release_date < '2030-01-01')
 );
 
 CREATE TABLE IF NOT EXISTS collection_track ( 
@@ -46,19 +47,5 @@ track_id INTEGER REFERENCES track(id),
 CONSTRAINT elsepk PRIMARY KEY (collection_id, track_id) 
 );
 
---2 Ð—Ð°Ð´Ð°Ð½Ð¸Ðµ---
-
-CREATE TABLE IF NOT EXISTS employee (
-id serial PRIMARY KEY,
-employee_name VARCHAR(40) NOT NULL,
-departement INTEGER NOT NULL,
-chief INTEGER NOT NULL UNIQUE
-);
-
-CREATE TABLE IF NOT EXISTS chief ( 
-id serial PRIMARY KEY,
-chief_name VARCHAR(40) NOT NULL,
-employee_chief INTEGER NOT NULL REFERENCES employee(chief)
-);
 
 
