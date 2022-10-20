@@ -1,207 +1,78 @@
-import psycopg2
-import datetime
-from my_config import user, password, database
+import json
+import sqlalchemy
+from sqlalchemy.orm import declarative_base, relationship, sessionmaker
+from models import create_tables, Publisher, Book, Shop, Stock, Sale
+from connect import name, password, name_DB   # Имя пользователя, пароль и названия БД лежат в другом файле
 
 
-def create_table(cursor):
-    '''
-    Функция, создающая структуру БД
-    '''
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS phone_book(
-            id SERIAL PRIMARY KEY,
-            last_name varchar(40) NOT NULL,
-            first_name varchar(40) NOT NULL,
-            phone varchar(40), -- Сделал 40, чтобы вошло побольше номеров. Взял varchar, чтобы можно было использовать -.
-            email varchar(40) UNIQUE NOT NULL,
-            date_insert DATE
-            );
-        ''')
-    conn.commit()
-    print('Структура успешно создана.')
+DSN = f'postgresql://{name}:{password}@localhost:5432/{name_DB}'
+engine = sqlalchemy.create_engine(DSN)
+
+create_tables(engine)
+
+Session = sessionmaker(bind=engine)
+session = Session()
+
+with open('fixtures/test_data.json', 'r') as fd:
+    data = json.load(fd)
+
+for element in data:
+    if element['model'] == 'publisher':
+        values_ = Publisher(id=element["pk"], name=element['fields']["name"])
+        session.add(values_)
+    elif element['model'] == 'book':
+        values_ = Book(id=element["pk"], title=element['fields']["title"],
+                       id_publisher=element['fields']["id_publisher"])
+        session.add(values_)
+    elif element['model'] == 'shop':
+        values_ = Shop(id=element["pk"], name=element['fields']["name"])
+        session.add(values_)
+    elif element['model'] == 'stock':
+        values_ = Stock(id=element["pk"], id_book=element['fields']["id_book"], id_shop=element['fields']["id_shop"],
+                        count=element['fields']["count"])
+        session.add(values_)
+    elif element['model'] == 'sale':
+        values_ = Sale(id=element["pk"], price=element['fields']["price"], date_sale=element['fields']["date_sale"],
+                       id_stock=element['fields']["id_stock"], count=element['fields']["count"])
+        session.add(values_)
+session.commit()
+
+input_ = input('Введите имя издателя или его идентификатор\n')
+if input_.isdigit():
+    q = session.query(Shop).join(Stock).join(Book).join(Publisher).filter(Publisher.id == input_)
+    for s in q.all():
+        print(s)
+else:
+    q = session.query(Shop).join(Stock).join(Book).join(Publisher).filter(Publisher.name == input_)
+    for s in q.all():
+        print(s)
+
+session.close()
 
 
-def drop(cursor):
-    '''
-    Функция, удаляющая структуру в БД
-    '''
-    cursor.execute('''
-            DROP TABLE phone_book;
-        ''')
-    conn.commit()
-    print('Структура успешно удалена.')
-
-def insert(cursor):
-    try:
-        '''
-        Функция, позволяющая добавить нового клиента в БД.
-        '''
-        last_name_, first_name_, phone_, email_ = input('Введите через пробел фамилию,имя,телефон,э-почту (почта '
-                                                        'должна быть уникальной для всех клиентов), если номера '
-                                                        'телефона нет, введите -\n').split() # нужно сделать проверку по почте, хотябы есть ли там @
-        date = datetime.datetime.now()
-        current_date = (str(date.year) + '-' + str(date.month) + '-' + str(date.day)) # Эта переменная str, а я ее смог вставить в таблицу в ячейку с типом DATE. Непонятно.
-        cursor.execute('''
-                INSERT INTO phone_book(last_name, first_name, phone, email, date_insert)
-                VALUES (%s, %s, %s, %s, %s) RETURNING last_name;
-        ''', (last_name_, first_name_, phone_, email_, current_date))
-        conn.commit()
-        print(f'Запись с фамилией {cursor.fetchone()[0]} добавлена в базу.\n')
-    except ValueError:
-        print('Возникла ошибка!\nНесоответствие аргументов количеству столбцов в таблице. Попробуйте снова.')
-        insert(cursor)
-    except: # Здесь можно обрабатывать другие ислючения, надо только знать их типы.
-         print('Возникла ошибка!\nПопробуйте снова.')
-         insert(cursor)
 
 
-def add_phone(cursor):
-    '''
-    Функция, позволяющая добавить телефон для существующего клиента.
-    '''
-    last_name_, phone_ = input('Введите через пробел фамилию клиента и номер телефона, который вы хотите добавить.\n').split() # нужно сделать проверку номера телефона, цифры ли это
-    cursor.execute('''
-        SELECT phone FROM phone_book
-        WHERE last_name = %s;
-    ''', (last_name_,))
-    response_phone = cursor.fetchone()[0]
-    if response_phone == '-':
-        cursor.execute('''
-            UPDATE phone_book SET phone = %s
-            WHERE last_name = %s;
-            ''', (phone_, last_name_))
-    else: #Нужно сделать проверку на случай, если номер повторяется
-        new_phone = (str(response_phone)+', '+str(phone_))
-        cursor.execute('''
-            UPDATE phone_book SET phone = %s
-            WHERE last_name = %s;
-            ''', (new_phone, last_name_))
-    conn.commit()
-    print(f'Номер телефона {phone_} успешно добавлен в базу для клиента {last_name_}.')
 
-def change_clients(cursor):
-      '''
-      Функция, позволяющая изменить данные о клиенте в БД.
-      '''
-      date = datetime.datetime.now()
-      current_date = (str(date.year) + '-' + str(date.month) + '-' + str(date.day))
-      last_name_ = input('Введите фамилию сотрудника, данные о котором необходимо изменить\n')
-      cursor.execute("""
-            SELECT * FROM phone_book WHERE last_name=%s;
-            """, (last_name_,))
-      for element in cursor.fetchall():
-          print(f'По указанному сотруднику есть следующая информация:\nФамилия: {element[1]}, '
-                 f'Имя: {element[2]}, телефон: {element[3]}, э-почта: {element[4]}, '
-                 f'дата внесения информации: {element[5]}')
-      first_name_, phone_, email_ = input('Введите новую информацию (имя, телефон, почтовый адрес) через пробел:').split()
-      cursor.execute("""
-            UPDATE phone_book SET first_name = %s, phone = %s, email = %s, date_insert = %s WHERE last_name=%s;
-            """, (first_name_, phone_, email_, current_date, last_name_))
-      conn.commit()
-      print(f'Данные по клиенту {last_name_} успешно изменены.')
+# publisher1 = Publisher(name="Ильф,Петров")
+# publisher2 = Publisher(name="Ф.Достаевский")
+#
+# book1 = Book(title='12 стульев', id_publisher = 1)
+# book2 = Book(title='Золотой теленок', id_publisher = 1)
+# book3 = Book(title='Идиот', id_publisher=2)
+# book4 = Book(title='Братья карамазовы', id_publisher=2)
+#
+# shop1 = Shop(name="Читай город")
+# shop2 = Shop(name='Книжная лавка')
+#
+# stock1 = Stock(id_book=1, id_shop=1, count=5)
+# stock2 = Stock(id_book=3, id_shop=2, count=4)
+#
+# sale1 = Sale(price=256.30, date_sale='2022-10-19', id_stock=1, count=1)
+# sale2 = Sale(price=300.70, date_sale='2022-10-20', id_stock=2, count=2)
 
-def delete_phone(cursor):
-    '''
-    Функция, позволяющая удалить телефон для существующего клиента
-    '''
-    last_name_ = input('Введите фамилию клиента, телефонный номер которого необходимо удалить\n')
-    cursor.execute("""
-        UPDATE phone_book SET phone = '-' WHERE last_name=%s;
-        """, (last_name_,))
-    conn.commit()
-    print(f'Телефонный номер по клиенту {last_name_} успешно удален.')
-
-def delete_client(cursor):
-    '''
-    Функция, позволяющая удалить существующего клиента из БД
-    '''
-    last_name_ = input('Введите фамилию клиента, которого требуется удалить из БД\n')
-    cursor.execute("""
-        DELETE FROM phone_book WHERE last_name=%s;
-        """, (last_name_,))
-    conn.commit()
-    print(f'Сотрудник с фамилией {last_name_} успешно удален.')
-
-
-def find_client(cursor):
-    '''
-    Функция, позволяющая найти клиента по его данным (имени, фамилии, email-у или телефону)
-    '''
-    field = str(input(
-        "n - поиск по столбцу с именем,\n"
-        "f - поиск по столбцу с фамилией,\n"
-        "e - поиск по столбцу с э-почтой,\n"
-        "p - поиск по столбцу с телефоном.\n"))
-    field = field.lower()
-    condition = str(input("Теперь введите параметр поиска соответствующий столбцу:"))
-    if field == 'n':
-        cursor.execute("""SELECT * FROM phone_book WHERE first_name=%s;""", (condition,))
-    elif field == 'f':
-        cursor.execute("""SELECT * FROM phone_book WHERE last_name=%s;""", (condition,))
-    elif field == 'p':
-        cursor.execute("""SELECT * FROM phone_book WHERE phone=%s;""", (condition,))
-    elif field == 'e':
-        cursor.execute("""SELECT * FROM phone_book WHERE email=%s;""", (condition,))
-    for element in cursor.fetchall():
-        print(f'По указанному сотруднику есть следующая информация:\nФамилия: {element[1]}, '
-              f'Имя: {element[2]}, телефон: {element[3]}, э-почта: {element[4]}, '
-              f'дата внесения информации: {element[5]}')
-    conn.commit()
-
-# Данное решение не работает, не смог разобраться. Проблема в передачи кавычек в условие.
-    # def execute(a,b):
-    #     cursor.execute("""
-    #   SELECT * FROM phone_book WHERE %s=%s;
-    #   """, (a,b))
-    #     print(f'По указанному сотруднику есть следующая информация {cursor.fetchall()}')
-    #     conn.commit()
-    # if field == 'n':
-    #     execute('first_name', condition)
-    # elif field == 'f':
-    #     execute('last_name', condition)
-    # elif field == 'p':
-    #     execute('phone', condition)
-    # elif field == 'e':
-    #     execute('phone', condition)
-
-def end(cursor):
-    conn.close()
-    print('Мы закончили.')
-    exit()
-
-
-dict_commands = {
-    'c': create_table,
-    'd': drop,
-    'i': insert,
-    'ap': add_phone,
-    'cc': change_clients,
-    'dp': delete_phone,
-    'dc': delete_client,
-    'fc': find_client,
-    'q': end
-}
-
-if __name__ == '__main__':
-    print('Приветсвуем вас в сервисе по добавлению клиентов в базу данных PostgreSQL')
-    def main():
-        while True:
-            key = input("Введите:\nс - для создания структуры в БД,\n"
-                            "d - для удалиения структуры БД,\n"
-                            "i - для внесения информации по клиенту в БД,\n"
-                            "ap - для внесения номера телефона клиенту,\n"
-                            "cc - для изменения данных по клиенту,\n"
-                            "dp - для удаления номера телефона клиента (функция удалит все имеющиеся номера клиента),\n"
-                            "dc - для удаления данных по клиенту из БД,\n"
-                            "fc - для поиска сотрудника в БД,\n"
-                            "q - выход из програмы.\n")
-            key = key.lower()
-            processing(key)
-
-
-    def processing(command):
-        dict_commands[command](cursor)
-    conn = psycopg2.connect(database=database, user=user, password=password)
-    cursor = conn.cursor()
-    main()
-
+# session.add_all([publisher1, publisher2])
+# session.add_all([book1, book2, book3, book4])
+# session.add_all([shop1,shop2])
+# session.add_all([stock1,stock2])
+# session.add(sale1)
+# session.add(sale2)
